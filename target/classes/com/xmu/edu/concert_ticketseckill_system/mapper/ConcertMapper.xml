@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmu.edu.concert_ticketseckill_system.mapper.ConcertMapper">
+    <!-- 动态查询演唱会 -->
+    <select id="getConcerts" parameterType="map" resultType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Concert">
+        SELECT * FROM concert
+        <where>
+            <if test="concertId != null">AND concert_id = #{concertId}</if>
+            <if test="concertName != null and concertName != ''">AND concert_name LIKE CONCAT('%', #{concertName}, '%')</if>
+            <if test="singer != null and singer != ''">AND singer LIKE CONCAT('%', #{singer}, '%')</if>
+            <if test="startTime != null">AND start_time >= #{startTime}</if>
+            <if test="endTime != null">AND #{endTime}>=end_time</if>
+            <if test="venue != null and venue != ''">AND venue LIKE CONCAT('%', #{venue}, '%')</if>
+            <if test="status != null and status != ''">AND status = #{status}</if>
+            <if test="price != null">AND price = #{price}</if>
+        </where>
+        <choose>
+            <when test="sortField != null and sortField != ''">
+                ORDER BY ${sortField} ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY create_time DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 添加演唱会 -->
+    <insert id="addConcert" parameterType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Concert" useGeneratedKeys="true" keyProperty="concertId">
+        INSERT INTO concert
+        (concert_name, singer, start_time, end_time, venue, ticket_num, remaining_tickets, status, create_time, price)
+        VALUES
+        (#{concertName}, #{singer}, #{startTime}, #{endTime}, #{venue}, #{ticketNum}, #{remainingTickets}, #{status}, #{createTime}, #{price})
+    </insert>
+
+    <!-- 更新演唱会 -->
+    <update id="updateConcert" parameterType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Concert">
+        UPDATE concert
+        <set>
+            <if test="concertName != null">concert_name = #{concertName},</if>
+            <if test="singer != null">singer = #{singer},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="venue != null">venue = #{venue},</if>
+            <if test="ticketNum != 0">ticket_num = #{ticketNum},</if>
+            <if test="remainingTickets != 0">remaining_tickets = #{remainingTickets},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="price != 0">price = #{price},</if>
+        </set>
+        WHERE concert_id = #{concertId}
+    </update>
+
+    <!-- 删除演唱会 -->
+    <delete id="deleteConcert" parameterType="int">
+        DELETE FROM concert WHERE concert_id = #{concertId}
+    </delete>
+</mapper>
