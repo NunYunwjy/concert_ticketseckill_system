@@ -15,7 +15,7 @@ public interface UserMapper {
     public List<User> findAll();
 
     @Select("select * from tb_user where user_id = #{id}")
-    public User findById(int id);
+    public User findById(long id);
 
     @Select("select * from tb_user where username= #{username}")
     public User findByUsername(String username);

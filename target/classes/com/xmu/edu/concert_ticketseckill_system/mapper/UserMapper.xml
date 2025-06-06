@@ -9,11 +9,13 @@
             <if test="password != null and password != ''">password = #{password},</if>
             <if test="phone != null and phone != ''">phone = #{phone},</if>
             <if test="email != null and email != ''">email = #{email},</if>
+            <if test="role != null and role != ''">role = #{role},</if>
         </set>
         WHERE user_id = #{userId}
     </update>
+
     <insert id="insertUser" parameterType="com.xmu.edu.concert_ticketseckill_system.mapper.po.User">
-        INSERT INTO tb_user(username, password, phone, email, create_time)
-        VALUES (#{username}, #{password}, #{phone}, #{email}, #{createTime})
+        INSERT INTO tb_user(username, password, phone, email, create_time,role)
+        VALUES (#{username}, #{password}, #{phone}, #{email}, #{createTime},#{role})
     </insert>
 </mapper>

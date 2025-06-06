@@ -20,11 +20,12 @@ public class JwtUtils {
      * @param username 用户名
      * @return JWT令牌
      */
-    public String generateToken(String username) {
+    public String generateToken(String username, Long userId){
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
+                .claim("userId", userId)  // 传入实际userId
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }

@@ -11,7 +11,7 @@ import java.util.Map;
 public interface ConcertMapper {
 
     @Select("SELECT * FROM tb_concert WHERE concert_id = #{id}")
-    public Concert getConcertById(int id);
+    public Concert getConcertById(long id);
 
     /**
      * 动态条件查询演唱会列表
@@ -50,5 +50,8 @@ public interface ConcertMapper {
      * @return 删除记录数
      */
     int deleteConcert(Integer concertId);
+
+    int updateStock(long concertId);
+
 
 }

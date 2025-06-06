@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserVo {
-    private int userId;
+    private long userId;
     private String username;
     private String password;
     private String phone;
     private String email;
+    private String role;
 
 }

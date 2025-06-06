@@ -5,7 +5,7 @@
 <mapper namespace="com.xmu.edu.concert_ticketseckill_system.mapper.OrderMapper">
     <!-- 动态查询订单 -->
     <select id="getOrders" parameterType="map" resultType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Order">
-        SELECT * FROM `order`
+        SELECT * FROM `tb_order`
         <where>
             <if test="orderId != null">AND order_id = #{orderId}</if>
             <if test="userId != null">AND user_id = #{userId}</if>
@@ -28,15 +28,15 @@
 
     <!-- 添加订单 -->
     <insert id="addOrder" parameterType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Order" useGeneratedKeys="true" keyProperty="orderId">
-        INSERT INTO `order`
-        (user_id, concert_id, ticket_num, order_amount, order_status, create_time, pay_time)
+        INSERT INTO `tb_order`
+        (order_id, user_id, concert_id, ticket_num, order_amount, order_status, create_time, pay_time)
         VALUES
-        (#{userId}, #{concertId}, #{ticketNum}, #{orderAmount}, #{orderStatus}, #{createTime}, #{payTime})
+        (#{orderId},#{userId}, #{concertId}, #{ticketNum}, #{orderAmount}, #{orderStatus}, #{createTime}, #{payTime})
     </insert>
 
     <!-- 更新订单 -->
     <update id="updateOrder" parameterType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Order">
-        UPDATE `order`
+        UPDATE `tb_order`
         <set>
             <if test="userId != null">user_id = #{userId},</if>
             <if test="concertId != null">concert_id = #{concertId},</if>
@@ -51,6 +51,6 @@
 
     <!-- 删除订单 -->
     <delete id="deleteOrder" parameterType="int">
-        DELETE FROM `order` WHERE order_id = #{orderId}
+        DELETE FROM `tb_order` WHERE order_id = #{orderId}
     </delete>
 </mapper>

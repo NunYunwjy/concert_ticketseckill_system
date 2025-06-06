@@ -54,7 +54,7 @@ public class UserService {
                 throw new BusinessException(ResultCode.INVALID_PASSWORD);
             }
         }
-        return jwtUtils.generateToken(username);
+        return jwtUtils.generateToken(username,newuser.getUserId());
     }
 
     /**

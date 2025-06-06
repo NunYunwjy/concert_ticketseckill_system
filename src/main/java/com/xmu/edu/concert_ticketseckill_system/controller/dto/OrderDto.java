@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto {
-    private int orderId;
-    private int userId;
-    private int concertId;
+    private long orderId;
+    private long userId;
+    private long concertId;
     private int ticketNum;
     private BigDecimal orderAmount;
     private String orderStatus;

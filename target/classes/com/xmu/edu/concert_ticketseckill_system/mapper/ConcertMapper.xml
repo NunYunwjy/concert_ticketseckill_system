@@ -5,7 +5,7 @@
 <mapper namespace="com.xmu.edu.concert_ticketseckill_system.mapper.ConcertMapper">
     <!-- 动态查询演唱会 -->
     <select id="getConcerts" parameterType="map" resultType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Concert">
-        SELECT * FROM concert
+        SELECT * FROM tb_concert
         <where>
             <if test="concertId != null">AND concert_id = #{concertId}</if>
             <if test="concertName != null and concertName != ''">AND concert_name LIKE CONCAT('%', #{concertName}, '%')</if>
@@ -28,7 +28,7 @@
 
     <!-- 添加演唱会 -->
     <insert id="addConcert" parameterType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Concert" useGeneratedKeys="true" keyProperty="concertId">
-        INSERT INTO concert
+        INSERT INTO tb_concert
         (concert_name, singer, start_time, end_time, venue, ticket_num, remaining_tickets, status, create_time, price)
         VALUES
         (#{concertName}, #{singer}, #{startTime}, #{endTime}, #{venue}, #{ticketNum}, #{remainingTickets}, #{status}, #{createTime}, #{price})
@@ -36,7 +36,7 @@
 
     <!-- 更新演唱会 -->
     <update id="updateConcert" parameterType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Concert">
-        UPDATE concert
+        UPDATE tb_concert
         <set>
             <if test="concertName != null">concert_name = #{concertName},</if>
             <if test="singer != null">singer = #{singer},</if>
@@ -53,6 +53,15 @@
 
     <!-- 删除演唱会 -->
     <delete id="deleteConcert" parameterType="int">
-        DELETE FROM concert WHERE concert_id = #{concertId}
+        DELETE FROM tb_concert WHERE concert_id = #{concertId}
     </delete>
+
+    <!--更新库存 -->
+    <update id="updateStock" parameterType="map">
+        UPDATE tb_concert
+        SET remaining_tickets = remaining_tickets- 1
+        WHERE concert_id = #{concertId}
+        AND remaining_tickets > 0
+    </update>
+
 </mapper>

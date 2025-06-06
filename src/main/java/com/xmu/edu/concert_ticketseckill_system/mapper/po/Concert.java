@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -12,16 +14,16 @@ import java.util.Date;
 @AllArgsConstructor
 
 public class Concert {
-    private int concertId;
+    private long concertId;
     private String concertName;
     private String singer;
-    private Date startTime;
-    private Date endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime  endTime;
     private String venue;
     private Integer ticketNum;
     private Integer remainingTickets;
     private String status;
-    private Date createTime;
-    private int price;
+    private LocalDateTime  createTime;
+    private BigDecimal price;
 
 }

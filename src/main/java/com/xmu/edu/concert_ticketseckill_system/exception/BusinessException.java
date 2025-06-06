@@ -8,6 +8,8 @@ public class BusinessException extends RuntimeException {
         this.resultCode = resultCode;
     }
 
+
+
     public ResultCode getResultCode() {
         return resultCode;
     }

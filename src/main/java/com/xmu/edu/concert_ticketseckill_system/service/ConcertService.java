@@ -1,18 +1,43 @@
 package com.xmu.edu.concert_ticketseckill_system.service;
 
+import com.xmu.edu.concert_ticketseckill_system.Interceptor.AuthInterceptor;
+import com.xmu.edu.concert_ticketseckill_system.Redis.RedisWorker;
+import com.xmu.edu.concert_ticketseckill_system.Redis.SimpleRedisLock;
+import com.xmu.edu.concert_ticketseckill_system.exception.BusinessException;
 import com.xmu.edu.concert_ticketseckill_system.mapper.ConcertMapper;
+import com.xmu.edu.concert_ticketseckill_system.mapper.OrderMapper;
 import com.xmu.edu.concert_ticketseckill_system.mapper.po.Concert;
+import com.xmu.edu.concert_ticketseckill_system.mapper.po.Order;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.xmu.edu.concert_ticketseckill_system.exception.ResultCode.*;
 
 @Service
 public class ConcertService {
     @Autowired
     private ConcertMapper concertMapper;
+
+    @Autowired
+    private AuthInterceptor authInterceptor;
+
+    @Autowired
+    private RedisWorker redisWorker;
+
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
 
     /**
      * 获取演唱会
@@ -25,41 +50,75 @@ public class ConcertService {
 
 
     public int addConcert(Concert concert) {
-        // 业务逻辑：设置默认值或校验
-        if (concert.getCreateTime() == null) {
-            concert.setCreateTime(new Date());
-        }
-        if (concert.getRemainingTickets() == null) {
-            concert.setRemainingTickets(concert.getTicketNum());
-        }
         return concertMapper.addConcert(concert);
     }
 
 
-    public int updateConcert(Concert concert) {
-        // 业务逻辑：校验演唱会是否存在或状态是否可更新
-        Concert existingConcert = concertMapper.getConcertById(concert.getConcertId());
-        if (existingConcert == null) {
-            throw new IllegalArgumentException("演唱会不存在，无法更新");
+
+    public long seckillTicket(Long concertId) {
+        //1.查询演唱会票
+        Concert concert = concertMapper.getConcertById(concertId);
+
+        //2.判断秒杀是否开始
+        if(concert.getStatus().equals("未开始")){
+            throw new BusinessException(CONCERT_NOT_STARTED);
         }
-        // 示例：已结束的演唱会不允许修改
-        if ("ENDED".equals(existingConcert.getStatus())) {
-            throw new IllegalStateException("演唱会已结束，不允许修改");
+
+        if(concert.getStatus().equals("缺货中")){
+            throw new BusinessException(CONCERT_NOT_STARTED);
         }
-        return concertMapper.updateConcert(concert);
+
+        //3.判断库存是否充足
+        if(concert.getRemainingTickets()<1){
+            throw new BusinessException(CONCERT_SOLD_OUT);
+        }
+
+        //4.判断一人一单
+        Long userId = authInterceptor.getUser().get().getUserId();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+
+        if(orderMapper.getOrders(params)!=null){
+            throw new BusinessException(DUPLICATE_ORDER);
+        }
+
+        //获取锁
+        SimpleRedisLock lock = new SimpleRedisLock("order"+userId,stringRedisTemplate);
+        boolean isLock=lock.trylock(1200);
+        //获取锁失败
+        if(!isLock){
+            throw new BusinessException(DUPLICATE_ORDER);
+        }
+
+        //下单
+        try {
+            // 使用通过 ApplicationContext 获取的代理对象
+            ConcertService proxy = (ConcertService) AopContext.currentProxy();
+            return proxy.createOrder(concert, userId);
+        } finally {
+            //释放锁
+            lock.unlock();
+        }
+
     }
 
+    @Transactional
+    public long createOrder(Concert concert, long userId) {
 
-    public int deleteConcert(Integer concertId) {
-        // 业务逻辑：校验演唱会是否存在或是否可删除
-        Concert existingConcert = concertMapper.getConcertById(concertId);
-        if (existingConcert == null) {
-            throw new IllegalArgumentException("演唱会不存在，无法删除");
+        //5.扣减库存 乐观锁
+        if(concertMapper.updateStock(concert.getConcertId())!=1){
+            concert.setStatus("缺货中");
+            concertMapper.updateConcert(concert);
+            throw new BusinessException(CONCERT_SOLD_OUT);
         }
-        // 示例：已开始的演唱会不允许删除
-        if (new Date().after(existingConcert.getStartTime())) {
-            throw new IllegalStateException("演唱会已开始，不允许删除");
-        }
-        return concertMapper.deleteConcert(concertId);
+
+        //创建订单
+        Order order = new Order(redisWorker.nextId("order:"),userId,concert.getConcertId()
+                ,1,  concert.getPrice(),"已支付",LocalDateTime.now(),LocalDateTime.now());
+        order.setCreateTime(LocalDateTime.now());
+        orderMapper.addOrder(order);
+        return order.getOrderId();
     }
+
 }

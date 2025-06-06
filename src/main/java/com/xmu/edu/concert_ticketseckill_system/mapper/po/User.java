@@ -13,12 +13,13 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    private int userId;
+    private long userId;//user_id
     private String username;
     private String password;
     private String phone;
     private String email;
     private LocalDateTime createTime;
+    private String role;
 
     public User(String username, String password, LocalDateTime createTime) {
         this.username = username;

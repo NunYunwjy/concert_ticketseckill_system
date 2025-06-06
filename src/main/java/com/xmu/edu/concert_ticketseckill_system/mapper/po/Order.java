@@ -5,20 +5,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Objects;
+import java.time.LocalDateTime;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
-    private int orderId;
-    private int userId;
-    private int concertId;
-    private int ticketNum;
+    private long orderId;
+    private long userId;
+    private long concertId;
+    private Integer ticketNum;
     private BigDecimal orderAmount;
     private String orderStatus;
-    private Date createTime;
-    private Date payTime;
+    private LocalDateTime createTime;
+    private LocalDateTime  payTime;
 
 }
