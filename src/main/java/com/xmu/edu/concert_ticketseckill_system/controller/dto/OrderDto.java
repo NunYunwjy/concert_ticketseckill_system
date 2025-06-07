@@ -1,5 +1,6 @@
 package com.xmu.edu.concert_ticketseckill_system.controller.dto;
 
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +11,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDto {
-    private long orderId;
-    private long userId;
-    private long concertId;
-    private int ticketNum;
+    private Long orderId;
+    private Long userId;
+    private Long concertId;
+    private Integer ticketNum;
     private BigDecimal orderAmount;
     private String orderStatus;
 }

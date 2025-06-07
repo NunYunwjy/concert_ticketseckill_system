@@ -57,7 +57,7 @@
     </delete>
 
     <!--更新库存 -->
-    <update id="updateStock" parameterType="map">
+    <update id="updateStock">
         UPDATE tb_concert
         SET remaining_tickets = remaining_tickets- 1
         WHERE concert_id = #{concertId}

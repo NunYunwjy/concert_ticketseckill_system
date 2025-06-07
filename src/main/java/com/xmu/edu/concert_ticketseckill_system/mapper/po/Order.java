@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
-    private long orderId;
-    private long userId;
-    private long concertId;
+    private Long orderId;
+    private Long userId;
+    private Long concertId;
     private Integer ticketNum;
     private BigDecimal orderAmount;
     private String orderStatus;

@@ -14,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 
 public class Concert {
-    private long concertId;
+    private Long concertId;
     private String concertName;
     private String singer;
     private LocalDateTime startTime;

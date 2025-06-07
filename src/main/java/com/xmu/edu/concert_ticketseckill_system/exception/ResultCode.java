@@ -18,7 +18,8 @@ public enum ResultCode {
     CONCERT_NOT_STARTED(HttpStatus.BAD_REQUEST, 40005, "演唱会未开始"),
     CONCERT_ENDED(HttpStatus.BAD_REQUEST, 40006, "演唱会已结束"),
     CONCERT_SOLD_OUT(HttpStatus.BAD_REQUEST, 40007, "演唱会已售罄"),
-    DUPLICATE_ORDER(HttpStatus.BAD_REQUEST, 40008, "请勿重复下单");
+    DUPLICATE_ORDER(HttpStatus.BAD_REQUEST, 40008, "请勿重复下单"),
+    LOCK_ACQUIRE_FAILED(HttpStatus.BAD_REQUEST, 400009,"获取锁失败" );
 
     private final HttpStatus httpStatus;  // HTTP状态码
     private final int businessCode;       // 业务错误码

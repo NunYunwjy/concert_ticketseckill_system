@@ -65,7 +65,7 @@ public class ConcertService {
         }
 
         if(concert.getStatus().equals("缺货中")){
-            throw new BusinessException(CONCERT_NOT_STARTED);
+            throw new BusinessException(CONCERT_SOLD_OUT);
         }
 
         //3.判断库存是否充足
@@ -73,24 +73,26 @@ public class ConcertService {
             throw new BusinessException(CONCERT_SOLD_OUT);
         }
 
-        //4.判断一人一单
+        //4.判断一人一单（修改：明确只查询已支付的订单）
         Long userId = authInterceptor.getUser().get().getUserId();
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("userId", userId);
+        // 修改：添加订单状态条件
+        Order queryOrder = new Order();
+        queryOrder.setUserId(userId);
+        queryOrder.setConcertId(concertId);
+        queryOrder.setOrderStatus("已支付"); // 只检查已支付的订单
 
-        if(orderMapper.getOrders(params)!=null){
+        if(orderMapper.selectByCondition(queryOrder).size()>0){
             throw new BusinessException(DUPLICATE_ORDER);
         }
 
-        //获取锁
-        SimpleRedisLock lock = new SimpleRedisLock("order"+userId,stringRedisTemplate);
+        // 获取锁（修改：使用更细粒度的锁）
+        SimpleRedisLock lock = new SimpleRedisLock("order:"+userId, stringRedisTemplate);
         boolean isLock=lock.trylock(1200);
         //获取锁失败
         if(!isLock){
-            throw new BusinessException(DUPLICATE_ORDER);
+            throw new BusinessException(LOCK_ACQUIRE_FAILED); // 使用更合适的错误码
         }
-
         //下单
         try {
             // 使用通过 ApplicationContext 获取的代理对象
@@ -100,14 +102,13 @@ public class ConcertService {
             //释放锁
             lock.unlock();
         }
-
     }
 
     @Transactional
     public long createOrder(Concert concert, long userId) {
-
         //5.扣减库存 乐观锁
-        if(concertMapper.updateStock(concert.getConcertId())!=1){
+        long concertId=concert.getConcertId();
+        if(concertMapper.updateStock(concertId)==0){
             concert.setStatus("缺货中");
             concertMapper.updateConcert(concert);
             throw new BusinessException(CONCERT_SOLD_OUT);
@@ -120,5 +121,4 @@ public class ConcertService {
         orderMapper.addOrder(order);
         return order.getOrderId();
     }
-
 }

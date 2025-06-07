@@ -4,7 +4,11 @@ import com.xmu.edu.concert_ticketseckill_system.controller.ConcertController;
 import com.xmu.edu.concert_ticketseckill_system.controller.dto.UserDto;
 import com.xmu.edu.concert_ticketseckill_system.controller.UserController;
 import com.xmu.edu.concert_ticketseckill_system.exception.ApiResponse;
+import com.xmu.edu.concert_ticketseckill_system.exception.BusinessException;
+import com.xmu.edu.concert_ticketseckill_system.mapper.ConcertMapper;
+import com.xmu.edu.concert_ticketseckill_system.mapper.OrderMapper;
 import com.xmu.edu.concert_ticketseckill_system.mapper.UserMapper;
+import com.xmu.edu.concert_ticketseckill_system.mapper.po.Order;
 import com.xmu.edu.concert_ticketseckill_system.service.ConcertService;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
@@ -16,11 +20,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
+import static com.xmu.edu.concert_ticketseckill_system.exception.ResultCode.CONCERT_SOLD_OUT;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
 
 @SpringBootTest
 class ConcertTicketseckillSystemApplicationTests {
@@ -147,5 +154,57 @@ class ConcertTicketseckillSystemApplicationTests {
 //        // 验证方法调用
 //        verify(concertService, times(1)).seckillTicket(concertId);
 //    }
+//
+//    @Autowired
+//    private OrderMapper orderMapper;
+//
+//    /**
+//     * 测试根据userId=10001和concertId=20002查询订单
+//     */
+//    @Test
+//    public void testSelectByUserIdAndConcertId() {
+//        // 准备查询条件
+//        Order queryOrder = new Order();
+//        queryOrder.setUserId((long) 100002);
+//        queryOrder.setConcertId((long)200001);
+//       // queryOrder.setOrderStatus("已支付"); // 可根据需要添加状态条件
+//
+//
+//        // 执行查询
+//        List<Order> result = orderMapper.selectByCondition(queryOrder);
+//
+//        // 验证结果（假设数据库中存在1条符合条件的订单）
+//        System.out.println(result.toString());
+//    }
+
+    /**
+     * 测试查询条件中不包含订单状态的情况
+     */
+//    @Test
+//    public void testSelectWithoutStatusCondition() {
+//        // 准备查询条件（不设置orderStatus）
+//        Order queryOrder = new Order();
+//        queryOrder.setUserId(100002);
+//        queryOrder.setConcertId(20002L);
+//
+//        // 执行查询
+//        List<Order> result = orderMapper.selectByCondition(queryOrder);
+//
+//        // 验证结果（假设数据库中存在2条符合条件的订单，包含已支付和未支付）
+//        assertNotNull(result, "查询结果不应为null");
+//        assertEquals(2, result.size(), "查询结果数量应为2");
+//    }
+
+    @Autowired
+    private ConcertMapper concertMapper;
+
+    @Test
+    public void test() {
+        long id = 200002;
+            concertMapper.updateStock(id);
+        if(concertMapper.updateStock(id)==0){
+            throw new BusinessException(CONCERT_SOLD_OUT);
+        }
+    }
 
 }

@@ -10,7 +10,7 @@ import java.util.Map;
 public interface OrderMapper {
     /**
      * 动态条件查询订单列表
-     * @param params 查询参数Map，支持以下键值：
+     * @param
      *               - orderId: 订单ID
      *               - userId: 用户ID
      *               - concertId: 演唱会ID
@@ -23,7 +23,7 @@ public interface OrderMapper {
      *               - sortOrder: 排序方向(ASC/DESC)
      * @return 符合条件的订单列表
      */
-    List<Order> getOrders(Map<String, Object> params);
+    List<Order> selectByCondition(Order order);
 
     /**
      * 添加订单

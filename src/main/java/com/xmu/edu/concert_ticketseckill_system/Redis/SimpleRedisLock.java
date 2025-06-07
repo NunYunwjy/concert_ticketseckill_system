@@ -34,7 +34,7 @@ public class SimpleRedisLock implements ILock {
         // 存储时转换为字符串
         Boolean success = stringRedisTemplate.opsForValue()
                 .setIfAbsent(KEY_PREFIX + lockKey, threadId + "", timeoutSec, TimeUnit.SECONDS);
-        return Boolean.TRUE.equals(Boolean.TRUE);
+        return Boolean.TRUE.equals(success);
     }
 
     @Override

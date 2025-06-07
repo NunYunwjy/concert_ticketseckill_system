@@ -3,27 +3,44 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xmu.edu.concert_ticketseckill_system.mapper.OrderMapper">
-    <!-- 动态查询订单 -->
-    <select id="getOrders" parameterType="map" resultType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Order">
-        SELECT * FROM `tb_order`
+    <!-- 基础查询字段 -->
+    <sql id="Base_Column_List">
+        order_id, user_id, concert_id, ticket_num,
+        order_amount, order_status, create_time, pay_time
+    </sql>
+
+    <!-- 动态条件查询订单 -->
+    <select id="selectByCondition" parameterType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Order" resultType="com.xmu.edu.concert_ticketseckill_system.mapper.po.Order">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM tb_order
         <where>
-            <if test="orderId != null">AND order_id = #{orderId}</if>
-            <if test="userId != null">AND user_id = #{userId}</if>
-            <if test="concertId != null">AND concert_id = #{concertId}</if>
-            <if test="orderStatus != null and orderStatus != ''">AND order_status = #{orderStatus}</if>
-            <if test="createTimeStart != null">AND create_time >= #{createTimeStart}</if>
-            <if test="createTimeEnd != null">AND create_time &lt;= #{createTimeEnd}</if>
-            <if test="minAmount != null">AND order_amount >= #{minAmount}</if>
-            <if test="maxAmount != null">AND order_amount &lt;= #{maxAmount}</if>
+            <if test="orderId != null">
+                AND order_id = #{orderId,jdbcType=BIGINT}
+            </if>
+            <if test="userId != null">
+                AND user_id = #{userId,jdbcType=BIGINT}
+            </if>
+            <if test="concertId != null">
+                AND concert_id = #{concertId,jdbcType=BIGINT}
+            </if>
+            <if test="ticketNum != null">
+                AND ticket_num = #{ticketNum,jdbcType=INTEGER}
+            </if>
+            <if test="orderAmount != null">
+                AND order_amount = #{orderAmount,jdbcType=DECIMAL}
+            </if>
+            <if test="orderStatus != null and orderStatus != ''">
+                AND order_status = #{orderStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="payTime != null">
+                AND pay_time = #{payTime,jdbcType=TIMESTAMP}
+            </if>
         </where>
-        <choose>
-            <when test="sortField != null and sortField != ''">
-                ORDER BY ${sortField} ${sortOrder}
-            </when>
-            <otherwise>
-                ORDER BY create_time DESC
-            </otherwise>
-        </choose>
+        ORDER BY create_time DESC
     </select>
 
     <!-- 添加订单 -->

@@ -1,5 +1,6 @@
 package com.xmu.edu.concert_ticketseckill_system.controller.dto;
 
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,14 +12,14 @@ import java.util.Date;
 @NoArgsConstructor
 @Data
 public class ConcertDto {
-    private long concertId;
+    private Long concertId;
     private String concertName;
     private String singer;
     private LocalDateTime startTime;
     private LocalDateTime  endTime;
     private String venue;
-    private int ticketNum;
-    private int remainingTickets;
+    private Integer ticketNum;
+    private Integer remainingTickets;
     private String status;
-    private int price;
+    private Integer price;
 }

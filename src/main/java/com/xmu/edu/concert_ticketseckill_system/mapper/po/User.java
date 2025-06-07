@@ -13,7 +13,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    private long userId;//user_id
+    private Long userId;//user_id
     private String username;
     private String password;
     private String phone;
