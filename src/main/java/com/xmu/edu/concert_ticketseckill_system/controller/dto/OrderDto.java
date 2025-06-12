@@ -1,16 +1,19 @@
 package com.xmu.edu.concert_ticketseckill_system.controller.dto;
 
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDto {
+public class OrderDto implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private Long orderId;
     private Long userId;
     private Long concertId;

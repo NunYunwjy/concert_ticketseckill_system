@@ -25,5 +25,4 @@ public class Concert {
     private String status;
     private LocalDateTime  createTime;
     private BigDecimal price;
-
 }

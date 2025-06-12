@@ -8,6 +8,7 @@ import com.xmu.edu.concert_ticketseckill_system.exception.BusinessException;
 import com.xmu.edu.concert_ticketseckill_system.mapper.ConcertMapper;
 import com.xmu.edu.concert_ticketseckill_system.mapper.OrderMapper;
 import com.xmu.edu.concert_ticketseckill_system.mapper.UserMapper;
+import com.xmu.edu.concert_ticketseckill_system.mapper.po.Concert;
 import com.xmu.edu.concert_ticketseckill_system.mapper.po.Order;
 import com.xmu.edu.concert_ticketseckill_system.service.ConcertService;
 import org.junit.Before;
@@ -77,16 +78,16 @@ class ConcertTicketseckillSystemApplicationTests {
 //
 //    }
 
-    @Mock
-    private ConcertService concertService;
-
-    @InjectMocks
-    private ConcertController concertController;
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+//    @Mock
+//    private ConcertService concertService;
+//
+//    @InjectMocks
+//    private ConcertController concertController;
+//
+//    @Before
+//    public void setUp() {
+//        MockitoAnnotations.initMocks(this);
+//    }
 
 
 //    @Test
@@ -200,11 +201,10 @@ class ConcertTicketseckillSystemApplicationTests {
 
     @Test
     public void test() {
-        long id = 200002;
-            concertMapper.updateStock(id);
-        if(concertMapper.updateStock(id)==0){
-            throw new BusinessException(CONCERT_SOLD_OUT);
-        }
+        Concert concert = new Concert();
+        concert.setConcertId((long)200003);
+        concert.setStatus("已售罄");
+        concertMapper.updateConcert(concert);
     }
 
 }

@@ -39,14 +39,14 @@
         UPDATE tb_concert
         <set>
             <if test="concertName != null">concert_name = #{concertName},</if>
-            <if test="singer != null">singer = #{singer},</if>
-            <if test="startTime != null">start_time = #{startTime},</if>
-            <if test="endTime != null">end_time = #{endTime},</if>
-            <if test="venue != null">venue = #{venue},</if>
-            <if test="ticketNum != 0">ticket_num = #{ticketNum},</if>
-            <if test="remainingTickets != 0">remaining_tickets = #{remainingTickets},</if>
+            <if test="singer!= null">singer = #{singer},</if>
+            <if test="startTime!= null">start_time = #{startTime},</if>
+            <if test="endTime!= null">end_time = #{endTime},</if>
+            <if test="venue!= null">venue = #{venue},</if>
+            <if test="ticketNum!= null">ticket_num = #{ticketNum},</if>
+            <if test="remainingTickets != null">remaining_tickets = #{remainingTickets},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="price != 0">price = #{price},</if>
+            <if test="price != null">price = #{price},</if>
         </set>
         WHERE concert_id = #{concertId}
     </update>

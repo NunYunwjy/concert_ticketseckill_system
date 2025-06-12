@@ -52,6 +52,4 @@ public interface ConcertMapper {
     int deleteConcert(Integer concertId);
 
     int updateStock(Long concertId);
-
-
 }
