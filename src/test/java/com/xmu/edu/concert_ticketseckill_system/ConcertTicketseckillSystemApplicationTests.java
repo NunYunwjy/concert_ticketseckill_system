@@ -203,8 +203,9 @@ class ConcertTicketseckillSystemApplicationTests {
     public void test() {
         Concert concert = new Concert();
         concert.setConcertId((long)200003);
-        concert.setStatus("已售罄");
-        concertMapper.updateConcert(concert);
+        long concertId= concert.getConcertId();
+       int row = concertMapper.updateStock(concertId);
+       System.out.println(row);
     }
 
 }
